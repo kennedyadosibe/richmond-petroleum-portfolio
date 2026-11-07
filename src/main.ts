@@ -75,7 +75,10 @@ const projectCard = (project: Project) => `
       <p>${project.description}</p>
       <div class="metric"><strong>${project.metric}</strong><span>${project.metricLabel}</span></div>
       <div class="tag-list">${project.tags.map((tag) => `<span>${tag}</span>`).join('')}</div>
-      <button class="text-button view-project" data-project-id="${project.id}">View project <span>↗</span></button>
+      <div class="project-actions">
+        <button class="text-button view-project" data-project-id="${project.id}" data-project-action="view">View project <span>↗</span></button>
+        <button class="text-button comment-project" data-project-id="${project.id}" data-project-action="comment">Comment <span>✎</span></button>
+      </div>
     </div>
   </article>
 `
@@ -155,7 +158,7 @@ app.innerHTML = `
     </section>
   </main>
   <footer><span>© 2024 RICH / PETROLEUM ENGINEERING</span><span>Learning in public, with intent.</span><a href="#top">Back to top ↑</a></footer>
-  <div class="modal-backdrop" id="modal" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" aria-label="Close dialog">×</button><p class="kicker"><span></span> Open channel</p><h2 id="modal-title">Let’s build<br /><em>something useful.</em></h2><p class="modal-intro">Share a question, an idea, or a project you’d like to work on together.</p><form id="contact-form"><label>Your name<input name="name" required placeholder="Ada Lovelace" /></label><label>Email address<input name="email" type="email" required placeholder="ada@example.com" /></label><label>What’s on your mind?<textarea name="message" rows="4" required placeholder="I’ve been thinking about..."></textarea></label><button class="primary-button" type="submit">Send message <span>↗</span></button></form></div></div>
+  <div class="modal-backdrop" id="modal" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" aria-label="Close dialog">×</button><p class="kicker"><span></span> Open channel</p><h2 id="modal-title">Let’s build<br /><em>from the field.</em></h2><p class="modal-intro" id="modal-intro">Share a question, an idea, or a project you’d like to work on together.</p><form id="contact-form"><label>Your name<input name="name" required placeholder="Ada Lovelace" /></label><label>Email address<input name="email" type="email" required placeholder="ada@example.com" /></label><label>Your comment<textarea name="message" rows="4" required placeholder="I’ve been thinking about..."></textarea></label><button class="primary-button" type="submit">Send comment <span>↗</span></button></form></div></div>
 `
 
 const grid = document.querySelector<HTMLDivElement>('#project-grid')!
@@ -163,6 +166,7 @@ const search = document.querySelector<HTMLInputElement>('#project-search')!
 const filters = document.querySelectorAll<HTMLButtonElement>('.filter')
 const modal = document.querySelector<HTMLDivElement>('#modal')!
 const modalTitle = document.querySelector<HTMLHeadingElement>('#modal-title')!
+const modalIntro = document.querySelector<HTMLParagraphElement>('#modal-intro')!
 
 const renderProjects = (filter = 'All', query = '') => {
   const term = query.toLowerCase()
@@ -189,8 +193,9 @@ document.querySelector<HTMLButtonElement>('#show-all')!.addEventListener('click'
   renderProjects()
 })
 
-const openModal = (title = 'Let’s build') => {
+const openModal = (title = 'Let’s build', intro = 'Share a question, an idea, or a project you’d like to work on together.') => {
   modalTitle.innerHTML = `${title}<br /><em>from the field.</em>`
+  modalIntro.textContent = intro
   modal.hidden = false
   document.body.classList.add('modal-open')
   modal.querySelector<HTMLInputElement>('input')?.focus()
@@ -203,7 +208,10 @@ document.addEventListener('click', (event) => {
   if (modalTrigger) openModal(modalTrigger.dataset.modal === 'note' ? 'Start a thread' : undefined)
   if (projectTrigger) {
     const project = projects.find((item) => item.id === projectTrigger.dataset.projectId)
-    if (project) openModal(project.title)
+    if (project) {
+      const isComment = projectTrigger.dataset.projectAction === 'comment'
+      openModal(isComment ? `Comment on ${project.title}` : project.title, isComment ? `Share feedback or ask a question about ${project.title}.` : undefined)
+    }
   }
   if (target.closest('.modal-close') || target === modal) {
     modal.hidden = true
