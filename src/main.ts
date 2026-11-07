@@ -192,7 +192,7 @@ app.innerHTML = `
     </section>
   </main>
   <footer><span>© 2024 RICH / PETROLEUM ENGINEERING</span><span>Learning in public, with intent.</span><a href="#top">Back to top ↑</a></footer>
-  <div class="modal-backdrop" id="modal" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" aria-label="Close dialog">×</button><p class="kicker"><span></span> Open channel</p><h2 id="modal-title">Let’s build<br /><em>from the field.</em></h2><p class="modal-intro" id="modal-intro">Share a question, an idea, or a project you’d like to work on together.</p><form id="contact-form"><label>Your name<input name="name" required placeholder="Ada Lovelace" /></label><label>Email address<input name="email" type="email" required placeholder="ada@example.com" /></label><label>Your comment<textarea name="message" rows="4" required placeholder="I’ve been thinking about..."></textarea></label><button class="primary-button" type="submit">Send comment <span>↗</span></button></form></div></div>
+  <div class="modal-backdrop" id="modal" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" aria-label="Close dialog">×</button><p class="kicker"><span></span> Open channel</p><h2 id="modal-title">Let’s build<br /><em>from the field.</em></h2><p class="modal-intro" id="modal-intro">Share a question, an idea, or a project you’d like to work on together.</p><div id="project-detail" hidden></div><form id="contact-form"><label>Your name<input name="name" required placeholder="Ada Lovelace" /></label><label>Email address<input name="email" type="email" required placeholder="ada@example.com" /></label><label>Your comment<textarea name="message" rows="4" required placeholder="I’ve been thinking about..."></textarea></label><button class="primary-button" type="submit">Send comment <span>↗</span></button></form></div></div>
 `
 
 const grid = document.querySelector<HTMLDivElement>('#project-grid')!
@@ -201,6 +201,8 @@ const filters = document.querySelectorAll<HTMLButtonElement>('.filter')
 const modal = document.querySelector<HTMLDivElement>('#modal')!
 const modalTitle = document.querySelector<HTMLHeadingElement>('#modal-title')!
 const modalIntro = document.querySelector<HTMLParagraphElement>('#modal-intro')!
+const projectDetail = document.querySelector<HTMLDivElement>('#project-detail')!
+const contactForm = document.querySelector<HTMLFormElement>('#contact-form')!
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 let activeCommentProjectId: string | null = null
 
@@ -276,10 +278,33 @@ document.querySelector<HTMLButtonElement>('#show-all')!.addEventListener('click'
 const openModal = (title = 'Let’s build', intro = 'Share a question, an idea, or a project you’d like to work on together.', projectId: string | null = null) => {
   modalTitle.innerHTML = `${title}<br /><em>from the field.</em>`
   modalIntro.textContent = intro
+  projectDetail.hidden = true
+  projectDetail.innerHTML = ''
+  contactForm.hidden = false
   activeCommentProjectId = projectId
   modal.hidden = false
   document.body.classList.add('modal-open')
   modal.querySelector<HTMLInputElement>('input')?.focus()
+}
+
+const openProjectDetail = (project: Project) => {
+  modalTitle.innerHTML = `${project.title}<br /><em>under the surface.</em>`
+  modalIntro.textContent = project.description
+  projectDetail.innerHTML = `
+    <div class="detail-grid">
+      <div><span>Category</span><strong>${project.category}</strong></div>
+      <div><span>Current status</span><strong>${project.status}</strong></div>
+      <div><span>Tools</span><strong>${project.tools}</strong></div>
+      <div><span>Method</span><strong>${project.method}</strong></div>
+      <div><span>Outcome</span><strong>${project.outcome}</strong></div>
+    </div>
+    <button class="primary-button detail-comment" data-project-comment="${project.id}">Comment on this project <span>✎</span></button>
+  `
+  projectDetail.hidden = false
+  contactForm.hidden = true
+  activeCommentProjectId = null
+  modal.hidden = false
+  document.body.classList.add('modal-open')
 }
 
 document.addEventListener('click', (event) => {
@@ -287,9 +312,17 @@ document.addEventListener('click', (event) => {
   const modalTrigger = target.closest<HTMLElement>('[data-modal]')
   const projectTrigger = target.closest<HTMLElement>('[data-project-id]')
   const flipTrigger = target.closest<HTMLButtonElement>('[data-flip-project]')
+  const projectCommentTrigger = target.closest<HTMLElement>('[data-project-comment]')
   if (flipTrigger) {
     const card = flipTrigger.closest<HTMLElement>('.project-card')
     card?.classList.toggle('is-flipped')
+    return
+  }
+  if (projectCommentTrigger) {
+    const project = projects.find((item) => item.id === projectCommentTrigger.dataset.projectComment)
+    if (project) {
+      openModal(`Comment on ${project.title}`, `Share feedback or ask a question about ${project.title}.`, project.id)
+    }
     return
   }
   if (modalTrigger) openModal(modalTrigger.dataset.modal === 'note' ? 'Start a thread' : undefined)
@@ -297,7 +330,11 @@ document.addEventListener('click', (event) => {
     const project = projects.find((item) => item.id === projectTrigger.dataset.projectId)
     if (project) {
       const isComment = projectTrigger.dataset.projectAction === 'comment'
-      openModal(isComment ? `Comment on ${project.title}` : project.title, isComment ? `Share feedback or ask a question about ${project.title}.` : undefined, isComment ? project.id : null)
+      if (isComment) {
+        openModal(`Comment on ${project.title}`, `Share feedback or ask a question about ${project.title}.`, project.id)
+      } else {
+        openProjectDetail(project)
+      }
     }
   }
   if (target.closest('.modal-close') || target === modal) {
@@ -318,7 +355,7 @@ if (!prefersReducedMotion) {
   )
 }
 
-document.querySelector<HTMLFormElement>('#contact-form')!.addEventListener('submit', (event) => {
+contactForm.addEventListener('submit', (event) => {
   event.preventDefault()
   const form = event.currentTarget as HTMLFormElement
   const formData = new FormData(form)

@@ -19,6 +19,41 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.project-detail {
+  margin-top: 24px;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.detail-grid div {
+  display: grid;
+  gap: 5px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+}
+
+.detail-grid span {
+  color: var(--muted);
+  font: 10px 'DM Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detail-grid strong {
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.detail-comment {
+  border-radius: 999px;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1163,6 +1198,7 @@ footer a {
 
 body {
   min-width: 320px;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 8% 0%, rgba(86, 164, 139, 0.16), transparent 28rem),
     radial-gradient(circle at 92% 18%, rgba(169, 156, 255, 0.1), transparent 28rem),
@@ -1411,7 +1447,7 @@ h2 {
 
 .manifesto {
   position: relative;
-  margin: 0 -12px;
+  margin: 0;
   padding: 110px 62px;
   border: 1px solid var(--line);
   border-radius: 28px;
@@ -1491,7 +1527,7 @@ footer a {
   }
 
   .manifesto {
-    margin: 0 12px;
+    margin: 0;
     padding: 75px 24px;
     border-radius: 22px;
   }
