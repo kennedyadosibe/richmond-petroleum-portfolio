@@ -1,4 +1,5 @@
 import './style.css'
+import { getPublishedProjects, isSupabaseConfigured, supabase, type ProjectRecord } from './supabase'
 
 type Project = {
   id: string
@@ -16,7 +17,7 @@ type Project = {
   outcome: string
 }
 
-const projects: Project[] = [
+const defaultProjects: Project[] = [
   {
     id: 'gridwatch',
     title: 'WellLog Insight',
@@ -63,6 +64,8 @@ const projects: Project[] = [
     outcome: 'A transparent recommendation that shows the trade-offs behind the preferred plan.',
   },
 ]
+
+let projects: Project[] = defaultProjects
 
 const app = document.querySelector<HTMLDivElement>('#app')
 
@@ -199,6 +202,23 @@ const modal = document.querySelector<HTMLDivElement>('#modal')!
 const modalTitle = document.querySelector<HTMLHeadingElement>('#modal-title')!
 const modalIntro = document.querySelector<HTMLParagraphElement>('#modal-intro')!
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+let activeCommentProjectId: string | null = null
+
+const toProject = (project: ProjectRecord): Project => ({
+  id: project.id,
+  title: project.title,
+  description: project.description,
+  category: project.category,
+  status: project.status,
+  metric: project.metric,
+  metricLabel: project.metric_label,
+  tags: project.tags,
+  accent: project.accent,
+  icon: project.icon,
+  tools: project.tools,
+  method: project.method,
+  outcome: project.outcome,
+})
 
 const bindMotionSurface = (element: HTMLElement, intensity: number) => {
   if (prefersReducedMotion || element.dataset.motionBound === 'true') {
@@ -253,9 +273,10 @@ document.querySelector<HTMLButtonElement>('#show-all')!.addEventListener('click'
   renderProjects()
 })
 
-const openModal = (title = 'Let’s build', intro = 'Share a question, an idea, or a project you’d like to work on together.') => {
+const openModal = (title = 'Let’s build', intro = 'Share a question, an idea, or a project you’d like to work on together.', projectId: string | null = null) => {
   modalTitle.innerHTML = `${title}<br /><em>from the field.</em>`
   modalIntro.textContent = intro
+  activeCommentProjectId = projectId
   modal.hidden = false
   document.body.classList.add('modal-open')
   modal.querySelector<HTMLInputElement>('input')?.focus()
@@ -276,7 +297,7 @@ document.addEventListener('click', (event) => {
     const project = projects.find((item) => item.id === projectTrigger.dataset.projectId)
     if (project) {
       const isComment = projectTrigger.dataset.projectAction === 'comment'
-      openModal(isComment ? `Comment on ${project.title}` : project.title, isComment ? `Share feedback or ask a question about ${project.title}.` : undefined)
+      openModal(isComment ? `Comment on ${project.title}` : project.title, isComment ? `Share feedback or ask a question about ${project.title}.` : undefined, isComment ? project.id : null)
     }
   }
   if (target.closest('.modal-close') || target === modal) {
@@ -300,8 +321,38 @@ if (!prefersReducedMotion) {
 document.querySelector<HTMLFormElement>('#contact-form')!.addEventListener('submit', (event) => {
   event.preventDefault()
   const form = event.currentTarget as HTMLFormElement
-  form.innerHTML = '<div class="success-message"><span>✓</span><h3>Message received.</h3><p>Thanks for reaching out. I’ll get back to you soon.</p></div>'
+  const formData = new FormData(form)
+  const submitComment = async () => {
+    if (supabase && activeCommentProjectId) {
+      const { error } = await supabase.from('comments').insert({
+        project_id: activeCommentProjectId,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        message: formData.get('message'),
+      })
+      if (error) {
+        throw error
+      }
+    }
+    form.innerHTML = '<div class="success-message"><span>✓</span><h3>Message received.</h3><p>Your note is now in the review queue. Thanks for contributing.</p></div>'
+  }
+
+  submitComment().catch((error: unknown) => {
+    console.error('Unable to submit comment.', error)
+    form.insertAdjacentHTML('beforeend', '<p class="form-error">We could not send your note. Please try again.</p>')
+  })
 })
+
+if (isSupabaseConfigured) {
+  getPublishedProjects()
+    .then((remoteProjects) => {
+      projects = remoteProjects.map(toProject)
+      renderProjects()
+    })
+    .catch((error: unknown) => {
+      console.error('Unable to load published projects from Supabase.', error)
+    })
+}
 
 if (!prefersReducedMotion) {
   const heroSurface = document.querySelector<HTMLElement>('.motion-hero')
