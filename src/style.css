@@ -189,6 +189,40 @@ nav a.active::after {
   color: var(--cream);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-link {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(237, 245, 242, 0.25);
+  border-radius: 50%;
+  color: var(--muted);
+  transition: 0.2s;
+}
+
+.admin-link svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.admin-link:hover,
+.admin-link:focus-visible {
+  color: var(--ink);
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
 .primary-button {
   display: inline-block;
   background: var(--ink);
@@ -1088,6 +1122,15 @@ footer a {
   .site-header .outline-button {
     padding: 9px;
     font-size: 10px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .admin-link {
+    width: 34px;
+    height: 34px;
   }
 
   .hero {

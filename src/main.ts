@@ -127,7 +127,12 @@ app.innerHTML = `
       <a href="/about.html">About</a>
       <a href="#notes">Notes</a>
     </nav>
-    <button class="outline-button" data-modal="collaborate">Start a conversation <span>↗</span></button>
+    <div class="header-actions">
+      <a class="admin-link" href="/admin.html" aria-label="Open admin login" title="Admin login">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 2.9 8.4 7 10 4.1-1.6 7-5.6 7-10V6l-7-3Z"/><path d="m9.5 12 1.7 1.7 3.5-3.5"/></svg>
+      </a>
+      <button class="outline-button" data-modal="collaborate">Start a conversation <span>↗</span></button>
+    </div>
   </header>
 
   <main id="top">
