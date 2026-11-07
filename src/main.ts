@@ -59,7 +59,7 @@ if (!app) {
 }
 
 const projectCard = (project: Project) => `
-  <article class="project-card" data-category="${project.category}" data-project="${project.id}">
+  <article class="project-card motion-surface" data-category="${project.category}" data-project="${project.id}">
     <div class="project-visual ${project.accent}">
       <span class="visual-grid"></span>
       <span class="visual-icon">${project.icon}</span>
@@ -98,7 +98,7 @@ app.innerHTML = `
   </header>
 
   <main id="top">
-    <section class="hero">
+    <section class="hero reveal-block">
       <div class="hero-copy">
         <p class="kicker"><span></span> Petroleum engineering student</p>
         <h1>Learning the<br /><em>language of the subsurface.</em></h1>
@@ -108,7 +108,7 @@ app.innerHTML = `
           <a class="quiet-link" href="#about">More about me <span>↗</span></a>
         </div>
       </div>
-      <div class="hero-diagram" aria-label="Abstract engineering diagram">
+      <div class="hero-diagram motion-surface motion-hero" aria-label="Abstract engineering diagram">
         <div class="diagram-orbit orbit-one"></div>
         <div class="diagram-orbit orbit-two"></div>
         <div class="diagram-core"><span>R</span></div>
@@ -119,13 +119,13 @@ app.innerHTML = `
       </div>
     </section>
 
-    <section class="signal-bar">
+    <section class="signal-bar reveal-block">
       <div><span class="signal-dot"></span> Currently exploring <strong>reservoir behavior, well performance &amp; field development</strong></div>
       <span class="signal-line"></span>
       <div class="signal-right">Scroll to explore <span>↓</span></div>
     </section>
 
-    <section class="work-section" id="work">
+    <section class="work-section reveal-block" id="work">
       <div class="section-heading">
         <div><p class="kicker"><span></span> Selected work</p><h2>Ideas in motion.</h2></div>
         <p>A few things I’m thinking about, testing, and making real. Every project is open to thoughtful feedback.</p>
@@ -143,12 +143,12 @@ app.innerHTML = `
       <div class="view-all"><button class="text-button" id="show-all">View all projects <span>↗</span></button><span>03 / 03</span></div>
     </section>
 
-    <section class="manifesto" id="about">
+    <section class="manifesto reveal-block" id="about">
       <div><p class="kicker"><span></span> The approach</p><h2>Stay curious.<br /><em>Think in systems.</em></h2></div>
       <div class="manifesto-copy"><p>I’m a petroleum engineering student building a clear record of what I’m learning — from rock and fluid properties to reservoir decisions and production strategy.</p><p>This site is a study desk, not a showroom. If you spot a better method, have field experience to share, or want to discuss a project, <a href="#notes">leave a note</a>.</p><a class="quiet-link" href="#notes">Read the field notes <span>↗</span></a></div>
     </section>
 
-    <section class="notes-section" id="notes">
+    <section class="notes-section reveal-block" id="notes">
       <div class="section-heading"><div><p class="kicker"><span></span> From the workbench</p><h2>Field notes.</h2></div><button class="outline-button" data-modal="note">Leave a note <span>↗</span></button></div>
       <div class="notes-grid">
         <article class="note-card"><span class="note-number">01</span><p class="eyebrow">On process / 06.14.24</p><h3>The first prototype is a question, not an answer.</h3><a href="#notes" class="quiet-link">Read note <span>↗</span></a></article>
@@ -167,11 +167,40 @@ const filters = document.querySelectorAll<HTMLButtonElement>('.filter')
 const modal = document.querySelector<HTMLDivElement>('#modal')!
 const modalTitle = document.querySelector<HTMLHeadingElement>('#modal-title')!
 const modalIntro = document.querySelector<HTMLParagraphElement>('#modal-intro')!
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const bindMotionSurface = (element: HTMLElement, intensity: number) => {
+  if (prefersReducedMotion || element.dataset.motionBound === 'true') {
+    return
+  }
+  element.dataset.motionBound = 'true'
+
+  element.addEventListener('pointermove', (event) => {
+    const rect = element.getBoundingClientRect()
+    const x = (event.clientX - rect.left) / rect.width - 0.5
+    const y = (event.clientY - rect.top) / rect.height - 0.5
+    element.style.setProperty('--tilt-x', `${x * intensity * 2}`)
+    element.style.setProperty('--tilt-y', `${y * intensity * -2}`)
+    element.style.setProperty('--glow-x', `${(x + 0.5) * 100}%`)
+    element.style.setProperty('--glow-y', `${(y + 0.5) * 100}%`)
+  })
+
+  element.addEventListener('pointerleave', () => {
+    element.style.setProperty('--tilt-x', '0')
+    element.style.setProperty('--tilt-y', '0')
+  })
+}
+
+const bindProjectMotion = () => {
+  const cards = document.querySelectorAll<HTMLElement>('.project-card.motion-surface')
+  cards.forEach((card) => bindMotionSurface(card, 7))
+}
 
 const renderProjects = (filter = 'All', query = '') => {
   const term = query.toLowerCase()
   const filtered = projects.filter((project) => (filter === 'All' || project.category === filter) && `${project.title} ${project.description} ${project.tags.join(' ')}`.toLowerCase().includes(term))
   grid.innerHTML = filtered.length ? filtered.map(projectCard).join('') : '<p class="empty-state">No projects match that search yet.</p>'
+  bindProjectMotion()
 }
 
 filters.forEach((button) => {
@@ -224,3 +253,24 @@ document.querySelector<HTMLFormElement>('#contact-form')!.addEventListener('subm
   const form = event.currentTarget as HTMLFormElement
   form.innerHTML = '<div class="success-message"><span>✓</span><h3>Message received.</h3><p>Thanks for reaching out. I’ll get back to you soon.</p></div>'
 })
+
+if (!prefersReducedMotion) {
+  const heroSurface = document.querySelector<HTMLElement>('.motion-hero')
+  if (heroSurface) {
+    bindMotionSurface(heroSurface, 5)
+  }
+  bindProjectMotion()
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+        }
+      })
+    },
+    { threshold: 0.2 },
+  )
+
+  document.querySelectorAll<HTMLElement>('.reveal-block').forEach((item) => observer.observe(item))
+}
