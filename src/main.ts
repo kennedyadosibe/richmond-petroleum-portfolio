@@ -11,6 +11,9 @@ type Project = {
   tags: string[]
   accent: string
   icon: string
+  tools: string
+  method: string
+  outcome: string
 }
 
 const projects: Project[] = [
@@ -25,6 +28,9 @@ const projects: Project[] = [
     tags: ['Petrophysics', 'Python', 'Excel'],
     accent: 'teal',
     icon: '⌁',
+    tools: 'Petrel concepts · Python · Excel',
+    method: 'Compare gamma ray, resistivity, and density responses to interpret lithology across a small well set.',
+    outcome: 'A repeatable interpretation workflow with clearer reservoir-property estimates.',
   },
   {
     id: 'atlas',
@@ -37,6 +43,9 @@ const projects: Project[] = [
     tags: ['Core Analysis', 'PVT', 'Reports'],
     accent: 'orange',
     icon: '◈',
+    tools: 'Core reports · PVT tables · Spreadsheets',
+    method: 'Organize measured porosity and permeability alongside fluid-property observations from lab studies.',
+    outcome: 'A practical reference for connecting core measurements to production decisions.',
   },
   {
     id: 'flowbench',
@@ -49,6 +58,9 @@ const projects: Project[] = [
     tags: ['Reservoir Eng.', 'Eclipse', 'Mapping'],
     accent: 'purple',
     icon: '◌',
+    tools: 'Eclipse concepts · Mapping · Excel',
+    method: 'Compare well-placement and recovery assumptions across three simplified development scenarios.',
+    outcome: 'A transparent recommendation that shows the trade-offs behind the preferred plan.',
   },
 ]
 
@@ -60,24 +72,41 @@ if (!app) {
 
 const projectCard = (project: Project) => `
   <article class="project-card motion-surface" data-category="${project.category}" data-project="${project.id}">
-    <div class="project-visual ${project.accent}">
-      <span class="visual-grid"></span>
-      <span class="visual-icon">${project.icon}</span>
-      <span class="visual-label">PROJECT / 0${projects.indexOf(project) + 1}</span>
-      <span class="visual-line"></span>
-    </div>
-    <div class="card-content">
-      <div class="card-topline">
-        <span class="eyebrow">${project.category}</span>
-        <span class="status"><i></i>${project.status}</span>
+    <div class="project-card-inner">
+      <div class="project-face project-front">
+        <div class="project-visual ${project.accent}">
+          <span class="visual-grid"></span>
+          <span class="visual-icon">${project.icon}</span>
+          <span class="visual-label">PROJECT / 0${projects.indexOf(project) + 1}</span>
+          <span class="visual-line"></span>
+        </div>
+        <div class="card-content">
+          <div class="card-topline">
+            <span class="eyebrow">${project.category}</span>
+            <span class="status"><i></i>${project.status}</span>
+          </div>
+          <h3>${project.title}</h3>
+          <p>${project.description}</p>
+          <div class="metric"><strong>${project.metric}</strong><span>${project.metricLabel}</span></div>
+          <div class="tag-list">${project.tags.map((tag) => `<span>${tag}</span>`).join('')}</div>
+          <div class="project-actions">
+            <button class="text-button view-project" data-project-id="${project.id}" data-project-action="view">View project <span>↗</span></button>
+            <button class="text-button flip-project" data-flip-project="${project.id}">Technical details <span>↻</span></button>
+          </div>
+        </div>
       </div>
-      <h3>${project.title}</h3>
-      <p>${project.description}</p>
-      <div class="metric"><strong>${project.metric}</strong><span>${project.metricLabel}</span></div>
-      <div class="tag-list">${project.tags.map((tag) => `<span>${tag}</span>`).join('')}</div>
-      <div class="project-actions">
-        <button class="text-button view-project" data-project-id="${project.id}" data-project-action="view">View project <span>↗</span></button>
-        <button class="text-button comment-project" data-project-id="${project.id}" data-project-action="comment">Comment <span>✎</span></button>
+      <div class="project-face project-back">
+        <div class="technical-kicker"><span>TECHNICAL READOUT</span><strong>0${projects.indexOf(project) + 1}</strong></div>
+        <h3>${project.title}<br /><em>under the surface.</em></h3>
+        <dl class="technical-list">
+          <div><dt>Tools</dt><dd>${project.tools}</dd></div>
+          <div><dt>Method</dt><dd>${project.method}</dd></div>
+          <div><dt>Outcome</dt><dd>${project.outcome}</dd></div>
+        </dl>
+        <div class="project-actions">
+          <button class="text-button flip-project" data-flip-project="${project.id}">Back to overview <span>↺</span></button>
+          <button class="text-button comment-project" data-project-id="${project.id}" data-project-action="comment">Comment <span>✎</span></button>
+        </div>
       </div>
     </div>
   </article>
@@ -109,6 +138,8 @@ app.innerHTML = `
         </div>
       </div>
       <div class="hero-diagram motion-surface motion-hero" aria-label="Abstract engineering diagram">
+        <div class="wireframe-mesh" aria-hidden="true"></div>
+        <div class="mesh-scanline" aria-hidden="true"></div>
         <div class="diagram-orbit orbit-one"></div>
         <div class="diagram-orbit orbit-two"></div>
         <div class="diagram-core"><span>R</span></div>
@@ -234,6 +265,12 @@ document.addEventListener('click', (event) => {
   const target = event.target as HTMLElement
   const modalTrigger = target.closest<HTMLElement>('[data-modal]')
   const projectTrigger = target.closest<HTMLElement>('[data-project-id]')
+  const flipTrigger = target.closest<HTMLButtonElement>('[data-flip-project]')
+  if (flipTrigger) {
+    const card = flipTrigger.closest<HTMLElement>('.project-card')
+    card?.classList.toggle('is-flipped')
+    return
+  }
   if (modalTrigger) openModal(modalTrigger.dataset.modal === 'note' ? 'Start a thread' : undefined)
   if (projectTrigger) {
     const project = projects.find((item) => item.id === projectTrigger.dataset.projectId)
@@ -247,6 +284,18 @@ document.addEventListener('click', (event) => {
     document.body.classList.remove('modal-open')
   }
 })
+
+if (!prefersReducedMotion) {
+  window.addEventListener(
+    'scroll',
+    () => {
+      const scrollProgress = Math.min(window.scrollY / Math.max(document.body.scrollHeight - window.innerHeight, 1), 1)
+      document.documentElement.style.setProperty('--scroll-camera', `${scrollProgress * 18}deg`)
+      document.documentElement.style.setProperty('--scroll-depth', `${scrollProgress * 90}px`)
+    },
+    { passive: true },
+  )
+}
 
 document.querySelector<HTMLFormElement>('#contact-form')!.addEventListener('submit', (event) => {
   event.preventDefault()
