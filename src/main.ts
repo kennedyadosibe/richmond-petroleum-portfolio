@@ -123,7 +123,7 @@ app.innerHTML = `
     </a>
     <nav aria-label="Main navigation">
       <a class="active" href="#work">Work</a>
-      <a href="#about">About</a>
+      <a href="/about.html">About</a>
       <a href="#notes">Notes</a>
     </nav>
     <button class="outline-button" data-modal="collaborate">Start a conversation <span>↗</span></button>
@@ -137,7 +137,7 @@ app.innerHTML = `
         <p class="hero-description">A portfolio of coursework, field studies, and practical projects exploring reservoirs, wells, and the decisions that bring energy from the ground to the surface.</p>
         <div class="hero-actions">
           <a class="primary-button" href="#work">Explore the work <span>↓</span></a>
-          <a class="quiet-link" href="#about">More about me <span>↗</span></a>
+          <a class="quiet-link" href="/about.html">More about me <span>↗</span></a>
         </div>
       </div>
       <div class="hero-diagram motion-surface motion-hero" aria-label="Abstract engineering diagram">
