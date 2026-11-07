@@ -65,11 +65,12 @@ const dashboardView = () => {
       <div class="dashboard-topbar"><span class="mobile-label">RICH / CONTROL ROOM</span><span class="live-indicator"><i></i> Supabase connected</span></div>
       <div class="dashboard-intro" id="overview"><div><p class="admin-kicker">Portfolio control room</p><h1>Good work starts<br /><em>with a clear readout.</em></h1></div><button class="admin-button primary" id="new-project">+ Add project</button></div>
       <section class="stats-grid"><div class="stat-card"><span>Published projects</span><strong id="project-count">—</strong></div><div class="stat-card"><span>Pending comments</span><strong id="comment-count">—</strong></div><div class="stat-card"><span>Workspace status</span><strong class="status-live">ONLINE</strong></div></section>
+      <section class="dashboard-section media-section"><div class="section-title"><div><p class="admin-kicker">Public profile</p><h2>CV file</h2><p class="section-helper">Upload a PDF to replace the current public CV. The built-in CV remains the fallback until you upload one.</p></div></div><form id="cv-form" class="media-form"><label>Replace CV<input id="cv-file" name="cv" type="file" accept="application/pdf,.pdf" required /></label><button class="admin-button primary" type="submit">Upload and replace CV</button><p class="media-status" id="cv-status"></p></form></section>
       <section class="dashboard-section" id="projects"><div class="section-title"><div><p class="admin-kicker">Content inventory</p><h2>Projects</h2><p class="section-helper">Add and maintain the work shown on the public portfolio.</p></div><button class="admin-button ghost" id="refresh-projects">Refresh ↻</button></div><div class="table-wrap"><table><thead><tr><th>Project</th><th>Category</th><th>Status</th><th>Published</th><th>Actions</th></tr></thead><tbody id="projects-table"></tbody></table></div></section>
       <section class="dashboard-section" id="comments"><div class="section-title"><div><p class="admin-kicker">Community inbox</p><h2>Comments</h2><p class="section-helper">Approve useful feedback before it appears publicly.</p></div></div><div class="comment-list" id="comments-list"></div></section>
       </main>
     </div>
-    <div class="admin-modal" id="project-modal" hidden><div class="admin-modal-card"><button class="modal-close" id="close-project-modal">×</button><p class="admin-kicker">Project editor</p><h2 id="project-modal-title">Add project</h2><form id="project-form" class="project-form"><input name="id" type="hidden" /><div class="form-grid"><label>Project ID<input name="project_id" required placeholder="well-log-insight" /></label><label>Title<input name="title" required placeholder="WellLog Insight" /></label><label>Category<input name="category" required placeholder="Reservoir" /></label><label>Status<input name="status" required placeholder="In progress" /></label><label>Metric<input name="metric" required placeholder="12" /></label><label>Metric label<input name="metric_label" required placeholder="wells reviewed" /></label><label>Accent<select name="accent"><option value="teal">Teal</option><option value="orange">Orange</option><option value="purple">Purple</option></select></label><label>Icon<input name="icon" required placeholder="⌁" /></label></div><label>Description<textarea name="description" rows="2" required></textarea></label><label>Tags, comma-separated<input name="tags" required placeholder="Petrophysics, Python, Excel" /></label><label>Tools<input name="tools" required /></label><label>Method<textarea name="method" rows="3" required></textarea></label><label>Outcome<textarea name="outcome" rows="3" required></textarea></label><label class="checkbox-label"><input name="published" type="checkbox" /> Publish on portfolio</label><button class="admin-button primary" type="submit">Save project</button></form></div></div>
+    <div class="admin-modal" id="project-modal" hidden><div class="admin-modal-card"><button class="modal-close" id="close-project-modal">×</button><p class="admin-kicker">Project editor</p><h2 id="project-modal-title">Add project</h2><form id="project-form" class="project-form"><input name="id" type="hidden" /><div class="form-grid"><label>Project ID<input name="project_id" required placeholder="well-log-insight" /></label><label>Title<input name="title" required placeholder="WellLog Insight" /></label><label>Category<input name="category" required placeholder="Reservoir" /></label><label>Status<input name="status" required placeholder="In progress" /></label><label>Metric<input name="metric" required placeholder="12" /></label><label>Metric label<input name="metric_label" required placeholder="wells reviewed" /></label><label>Accent<select name="accent"><option value="teal">Teal</option><option value="orange">Orange</option><option value="purple">Purple</option></select></label><label>Icon<input name="icon" required placeholder="⌁" /></label></div><label>Description<textarea name="description" rows="2" required></textarea></label><label>Tags, comma-separated<input name="tags" required placeholder="Petrophysics, Python, Excel" /></label><label>Tools<input name="tools" required /></label><label>Method<textarea name="method" rows="3" required></textarea></label><label>Outcome<textarea name="outcome" rows="3" required></textarea></label><label>Project or field picture<input name="project_image" type="file" accept="image/*" /></label><label class="checkbox-label"><input name="published" type="checkbox" /> Publish on portfolio</label><button class="admin-button primary" type="submit">Save project</button></form></div></div>
   `
 }
 
@@ -150,6 +151,8 @@ const fillProjectForm = (project?: ProjectRecord) => {
     set('tools', project.tools)
     set('method', project.method)
     set('outcome', project.outcome)
+    const imageInput = form.elements.namedItem('project_image') as HTMLInputElement
+    imageInput.value = ''
     const published = form.elements.namedItem('published') as HTMLInputElement
     published.checked = project.published
     ;(form.elements.namedItem('project_id') as HTMLInputElement).readOnly = true
@@ -189,8 +192,28 @@ const renderDashboard = async () => {
     event.preventDefault()
     const form = event.currentTarget as HTMLFormElement
     const data = new FormData(form)
+    const projectId = String(data.get('project_id'))
+    let imageUrl = projects.find((project) => project.id === projectId)?.image_url ?? null
+    const image = (form.elements.namedItem('project_image') as HTMLInputElement).files?.[0]
+    if (image) {
+      if (!image.type.startsWith('image/')) {
+        console.error('Project media must be an image.')
+        return
+      }
+      if (image.size > 10 * 1024 * 1024) {
+        console.error('Project media must be 10 MB or smaller.')
+        return
+      }
+      const path = `projects/${projectId}/${Date.now()}-${image.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`
+      const upload = await client!.storage.from('portfolio-media').upload(path, image, { upsert: false, contentType: image.type })
+      if (upload.error) {
+        console.error('Unable to upload project media.', upload.error)
+        return
+      }
+      imageUrl = client!.storage.from('portfolio-media').getPublicUrl(path).data.publicUrl
+    }
     const record = {
-      id: String(data.get('project_id')),
+      id: projectId,
       title: String(data.get('title')),
       category: String(data.get('category')),
       status: String(data.get('status')),
@@ -203,6 +226,7 @@ const renderDashboard = async () => {
       tools: String(data.get('tools')),
       method: String(data.get('method')),
       outcome: String(data.get('outcome')),
+      image_url: imageUrl,
       published: data.get('published') === 'on',
       sort_order: projects.find((project) => project.id === String(data.get('project_id')))?.sort_order ?? projects.length + 1,
     }
@@ -214,6 +238,35 @@ const renderDashboard = async () => {
     document.querySelector<HTMLElement>('#project-modal')!.hidden = true
     await loadData()
     renderProjectRows()
+  })
+  document.querySelector('#cv-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    const form = event.currentTarget as HTMLFormElement
+    const file = (form.elements.namedItem('cv') as HTMLInputElement).files?.[0]
+    const status = document.querySelector<HTMLElement>('#cv-status')
+    if (!file || file.type !== 'application/pdf') {
+      if (status) status.textContent = 'Choose a PDF CV file.'
+      return
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      if (status) status.textContent = 'The CV must be 10 MB or smaller.'
+      return
+    }
+    const upload = await client!.storage.from('portfolio-media').upload('cv/current.pdf', file, { upsert: true, contentType: 'application/pdf', cacheControl: '0' })
+    if (upload.error) {
+      console.error('Unable to upload CV.', upload.error)
+      if (status) status.textContent = 'Upload failed. Check the Storage bucket and policies.'
+      return
+    }
+    const cvUrl = client!.storage.from('portfolio-media').getPublicUrl('cv/current.pdf').data.publicUrl
+    const { error } = await client!.from('profile').upsert({ id: 1, cv_url: cvUrl })
+    if (error) {
+      console.error('Unable to save CV URL.', error)
+      if (status) status.textContent = 'The file uploaded, but its public link could not be saved.'
+      return
+    }
+    if (status) status.textContent = 'CV replaced successfully.'
+    form.reset()
   })
   document.querySelectorAll<HTMLButtonElement>('.edit-project').forEach((button) => {
     button.addEventListener('click', () => {

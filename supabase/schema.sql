@@ -14,6 +14,7 @@ create table if not exists public.projects (
   tools text not null default '',
   method text not null default '',
   outcome text not null default '',
+  image_url text,
   published boolean not null default false,
   sort_order integer not null default 0,
   created_at timestamptz not null default now(),
@@ -35,8 +36,12 @@ create table if not exists public.profile (
   name text not null default 'RICH',
   headline text not null default 'Petroleum engineering student',
   bio text not null default '',
+  cv_url text,
   updated_at timestamptz not null default now()
 );
+
+alter table public.projects add column if not exists image_url text;
+alter table public.profile add column if not exists cv_url text;
 
 alter table public.projects enable row level security;
 alter table public.comments enable row level security;
@@ -82,6 +87,31 @@ grant insert on public.comments to anon, authenticated;
 grant select on public.comments to anon, authenticated;
 grant all on public.projects, public.comments, public.profile to authenticated;
 
+insert into storage.buckets (id, name, public)
+values ('portfolio-media', 'portfolio-media', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Public portfolio media is readable" on storage.objects;
+create policy "Public portfolio media is readable"
+  on storage.objects for select to anon, authenticated
+  using (bucket_id = 'portfolio-media');
+
+drop policy if exists "Admins upload portfolio media" on storage.objects;
+create policy "Admins upload portfolio media"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'portfolio-media');
+
+drop policy if exists "Admins update portfolio media" on storage.objects;
+create policy "Admins update portfolio media"
+  on storage.objects for update to authenticated
+  using (bucket_id = 'portfolio-media')
+  with check (bucket_id = 'portfolio-media');
+
+drop policy if exists "Admins delete portfolio media" on storage.objects;
+create policy "Admins delete portfolio media"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'portfolio-media');
+
 insert into public.projects (id, title, description, category, status, metric, metric_label, tags, accent, icon, tools, method, outcome, published, sort_order)
 values
 ('gridwatch', 'WellLog Insight', 'A study of well-log data to identify lithology and estimate reservoir properties.', 'Reservoir', 'In progress', '12', 'wells reviewed', array['Petrophysics', 'Python', 'Excel'], 'teal', '⌁', 'Petrel concepts · Python · Excel', 'Compare gamma ray, resistivity, and density responses to interpret lithology across a small well set.', 'A repeatable interpretation workflow with clearer reservoir-property estimates.', true, 1),
@@ -89,6 +119,6 @@ values
 ('flowbench', 'Field Development Plan', 'A student field-development study connecting well placement, production forecasts, and recovery.', 'Production', 'Draft study', '3', 'scenarios compared', array['Reservoir Eng.', 'Eclipse', 'Mapping'], 'purple', '◌', 'Eclipse concepts · Mapping · Excel', 'Compare well-placement and recovery assumptions across three simplified development scenarios.', 'A transparent recommendation that shows the trade-offs behind the preferred plan.', true, 3)
 on conflict (id) do nothing;
 
-insert into public.profile (id, name, headline, bio)
-values (1, 'RICH', 'Petroleum engineering student', 'A portfolio of coursework, field studies, and practical projects.')
+insert into public.profile (id, name, headline, bio, cv_url)
+values (1, 'RICH', 'Petroleum engineering student', 'A portfolio of coursework, field studies, and practical projects.', null)
 on conflict (id) do nothing;

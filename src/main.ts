@@ -1,5 +1,5 @@
 import './style.css'
-import { getPublishedProjects, isSupabaseConfigured, supabase, type ProjectRecord } from './supabase'
+import { getProfile, getPublishedProjects, isSupabaseConfigured, supabase, type ProjectRecord } from './supabase'
 
 type Project = {
   id: string
@@ -15,6 +15,7 @@ type Project = {
   tools: string
   method: string
   outcome: string
+  imageUrl: string | null
 }
 
 const defaultProjects: Project[] = [
@@ -32,6 +33,7 @@ const defaultProjects: Project[] = [
     tools: 'Petrel concepts · Python · Excel',
     method: 'Compare gamma ray, resistivity, and density responses to interpret lithology across a small well set.',
     outcome: 'A repeatable interpretation workflow with clearer reservoir-property estimates.',
+    imageUrl: null,
   },
   {
     id: 'atlas',
@@ -47,6 +49,7 @@ const defaultProjects: Project[] = [
     tools: 'Core reports · PVT tables · Spreadsheets',
     method: 'Organize measured porosity and permeability alongside fluid-property observations from lab studies.',
     outcome: 'A practical reference for connecting core measurements to production decisions.',
+    imageUrl: null,
   },
   {
     id: 'flowbench',
@@ -62,6 +65,7 @@ const defaultProjects: Project[] = [
     tools: 'Eclipse concepts · Mapping · Excel',
     method: 'Compare well-placement and recovery assumptions across three simplified development scenarios.',
     outcome: 'A transparent recommendation that shows the trade-offs behind the preferred plan.',
+    imageUrl: null,
   },
 ]
 
@@ -78,7 +82,7 @@ const projectCard = (project: Project) => `
     <div class="project-card-inner">
       <div class="project-face project-front">
         <div class="project-visual ${project.accent}">
-          <span class="visual-grid"></span>
+          ${project.imageUrl ? `<img class="project-image" src="${project.imageUrl}" alt="${project.title} field or project image" />` : '<span class="visual-grid"></span>'}
           <span class="visual-icon">${project.icon}</span>
           <span class="visual-label">PROJECT / 0${projects.indexOf(project) + 1}</span>
           <span class="visual-line"></span>
@@ -226,6 +230,7 @@ const toProject = (project: ProjectRecord): Project => ({
   tools: project.tools,
   method: project.method,
   outcome: project.outcome,
+  imageUrl: project.image_url,
 })
 
 const bindMotionSurface = (element: HTMLElement, intensity: number) => {
@@ -387,6 +392,14 @@ contactForm.addEventListener('submit', (event) => {
 })
 
 if (isSupabaseConfigured) {
+  getProfile()
+    .then((profile) => {
+      if (!profile?.cv_url) return
+      document.querySelectorAll<HTMLAnchorElement>('a[href="/richmond-ayamga-cv.html"]').forEach((link) => {
+        link.href = profile.cv_url as string
+      })
+    })
+    .catch((error: unknown) => console.error('Unable to load public profile media.', error))
   getPublishedProjects()
     .then((remoteProjects) => {
       projects = remoteProjects.map(toProject)

@@ -14,8 +14,17 @@ export type ProjectRecord = {
   tools: string
   method: string
   outcome: string
+  image_url: string | null
   published: boolean
   sort_order: number
+}
+
+export type ProfileRecord = {
+  id: number
+  name: string
+  headline: string
+  bio: string
+  cv_url: string | null
 }
 
 export type CommentRecord = {
@@ -51,5 +60,13 @@ export const getPublishedProjects = async (): Promise<ProjectRecord[]> => {
   if (error) {
     throw error
   }
+
   return data as ProjectRecord[]
+}
+
+export const getProfile = async (): Promise<ProfileRecord | null> => {
+  const client = requireSupabase()
+  const { data, error } = await client.from('profile').select('*').eq('id', 1).maybeSingle()
+  if (error) throw error
+  return data as ProfileRecord | null
 }

@@ -1,4 +1,5 @@
 import './about.css'
+import { getProfile, isSupabaseConfigured } from './supabase'
 
 const app = document.querySelector<HTMLDivElement>('#profile-app')
 
@@ -38,3 +39,14 @@ app.innerHTML = `
   </main>
   <footer><span>© 2026 RICHMOND AYAMGA</span><span>Petroleum engineering student / Ghana</span><a href="/">Back to work ↑</a></footer>
 `
+
+if (isSupabaseConfigured) {
+  getProfile()
+    .then((profile) => {
+      if (!profile?.cv_url) return
+      document.querySelectorAll<HTMLAnchorElement>('a[href="/richmond-ayamga-cv.html"]').forEach((link) => {
+        link.href = profile.cv_url as string
+      })
+    })
+    .catch((error: unknown) => console.error('Unable to load public CV.', error))
+}
