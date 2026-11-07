@@ -8,7 +8,7 @@ if (!app) {
 
 app.innerHTML = `
   <header class="profile-header">
-    <a class="profile-brand" href="/" aria-label="Back to RICH portfolio"><span><img src="/profile-engineering.svg" alt="" aria-hidden="true"></span><strong>RICH</strong><small>PETROLEUM / STUDENT</small></a>
+    <a class="profile-brand" href="/" aria-label="Back to RICH portfolio"><span><img src="/nav-engineering-mark.svg" alt="" aria-hidden="true"></span><strong>RICH</strong><small>PETROLEUM / STUDENT</small></a>
     <nav aria-label="Profile navigation"><a href="/">Work</a><a class="active" href="/about.html">About</a><a href="/#notes">Notes</a></nav>
     <a class="profile-button" href="/richmond-ayamga-cv.html" download>Download CV <span>↓</span></a>
   </header>

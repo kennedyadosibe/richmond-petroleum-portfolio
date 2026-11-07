@@ -118,7 +118,7 @@ const projectCard = (project: Project) => `
 app.innerHTML = `
   <header class="site-header">
     <a class="brand" href="#top" aria-label="RICH Engineering home">
-      <span class="brand-mark"><img src="/profile-engineering.svg" alt="" aria-hidden="true"></span>
+      <span class="brand-mark"><img src="/nav-engineering-mark.svg" alt="" aria-hidden="true"></span>
       <span><b>RICH</b><small>PETROLEUM / STUDENT</small></span>
     </a>
     <nav aria-label="Main navigation">
