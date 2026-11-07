@@ -93,8 +93,9 @@ const projectCard = (project: Project) => `
           <div class="metric"><strong>${project.metric}</strong><span>${project.metricLabel}</span></div>
           <div class="tag-list">${project.tags.map((tag) => `<span>${tag}</span>`).join('')}</div>
           <div class="project-actions">
-            <button class="text-button view-project" data-project-id="${project.id}" data-project-action="view">View project <span>↗</span></button>
+            <button class="text-button view-project" data-project-id="${project.id}" data-project-action="view">View details <span>↗</span></button>
             <button class="text-button flip-project" data-flip-project="${project.id}">Technical details <span>↻</span></button>
+            <button class="text-button comment-project" data-project-id="${project.id}" data-project-action="comment">Comment <span>✎</span></button>
           </div>
         </div>
       </div>
