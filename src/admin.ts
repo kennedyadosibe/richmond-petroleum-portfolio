@@ -51,16 +51,24 @@ const loginView = (message = '') => {
 
 const dashboardView = () => {
   app.innerHTML = `
-    <header class="admin-header">
-      <a class="admin-brand" href="/"><span>R</span><div><strong>RICH ADMIN</strong><small>CONTROL ROOM</small></div></a>
-      <div class="header-actions"><a href="/" class="back-link">View site ↗</a><button class="admin-button ghost" id="sign-out">Sign out</button></div>
-    </header>
-    <main class="dashboard">
-      <div class="dashboard-intro"><div><p class="admin-kicker">Portfolio control room</p><h1>Good work starts<br /><em>with a clear readout.</em></h1></div><button class="admin-button primary" id="new-project">+ Add project</button></div>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <a class="admin-brand" href="/"><span>R</span><div><strong>RICH ADMIN</strong><small>CONTROL ROOM</small></div></a>
+        <nav class="admin-nav" aria-label="Dashboard navigation">
+          <a class="active" href="#overview"><span>◈</span> Overview</a>
+          <a href="#projects"><span>⌁</span> Projects</a>
+          <a href="#comments"><span>✎</span> Comments <b id="sidebar-comment-count">0</b></a>
+        </nav>
+        <div class="sidebar-bottom"><a href="/" class="back-link">View public site ↗</a><button class="admin-button ghost" id="sign-out">Sign out</button></div>
+      </aside>
+      <main class="dashboard">
+      <div class="dashboard-topbar"><span class="mobile-label">RICH / CONTROL ROOM</span><span class="live-indicator"><i></i> Supabase connected</span></div>
+      <div class="dashboard-intro" id="overview"><div><p class="admin-kicker">Portfolio control room</p><h1>Good work starts<br /><em>with a clear readout.</em></h1></div><button class="admin-button primary" id="new-project">+ Add project</button></div>
       <section class="stats-grid"><div class="stat-card"><span>Published projects</span><strong id="project-count">—</strong></div><div class="stat-card"><span>Pending comments</span><strong id="comment-count">—</strong></div><div class="stat-card"><span>Workspace status</span><strong class="status-live">ONLINE</strong></div></section>
-      <section class="dashboard-section"><div class="section-title"><div><p class="admin-kicker">Content inventory</p><h2>Projects</h2></div><button class="admin-button ghost" id="refresh-projects">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Project</th><th>Category</th><th>Status</th><th>Published</th><th>Actions</th></tr></thead><tbody id="projects-table"></tbody></table></div></section>
-      <section class="dashboard-section"><div class="section-title"><div><p class="admin-kicker">Community inbox</p><h2>Comments</h2></div></div><div class="comment-list" id="comments-list"></div></section>
-    </main>
+      <section class="dashboard-section" id="projects"><div class="section-title"><div><p class="admin-kicker">Content inventory</p><h2>Projects</h2><p class="section-helper">Add and maintain the work shown on the public portfolio.</p></div><button class="admin-button ghost" id="refresh-projects">Refresh ↻</button></div><div class="table-wrap"><table><thead><tr><th>Project</th><th>Category</th><th>Status</th><th>Published</th><th>Actions</th></tr></thead><tbody id="projects-table"></tbody></table></div></section>
+      <section class="dashboard-section" id="comments"><div class="section-title"><div><p class="admin-kicker">Community inbox</p><h2>Comments</h2><p class="section-helper">Approve useful feedback before it appears publicly.</p></div></div><div class="comment-list" id="comments-list"></div></section>
+      </main>
+    </div>
     <div class="admin-modal" id="project-modal" hidden><div class="admin-modal-card"><button class="modal-close" id="close-project-modal">×</button><p class="admin-kicker">Project editor</p><h2 id="project-modal-title">Add project</h2><form id="project-form" class="project-form"><input name="id" type="hidden" /><div class="form-grid"><label>Project ID<input name="project_id" required placeholder="well-log-insight" /></label><label>Title<input name="title" required placeholder="WellLog Insight" /></label><label>Category<input name="category" required placeholder="Reservoir" /></label><label>Status<input name="status" required placeholder="In progress" /></label><label>Metric<input name="metric" required placeholder="12" /></label><label>Metric label<input name="metric_label" required placeholder="wells reviewed" /></label><label>Accent<select name="accent"><option value="teal">Teal</option><option value="orange">Orange</option><option value="purple">Purple</option></select></label><label>Icon<input name="icon" required placeholder="⌁" /></label></div><label>Description<textarea name="description" rows="2" required></textarea></label><label>Tags, comma-separated<input name="tags" required placeholder="Petrophysics, Python, Excel" /></label><label>Tools<input name="tools" required /></label><label>Method<textarea name="method" rows="3" required></textarea></label><label>Outcome<textarea name="outcome" rows="3" required></textarea></label><label class="checkbox-label"><input name="published" type="checkbox" /> Publish on portfolio</label><button class="admin-button primary" type="submit">Save project</button></form></div></div>
   `
 }
@@ -101,6 +109,8 @@ const renderComments = () => {
   if (!list) return
   const pending = comments.filter((comment) => comment.status === 'pending')
   document.querySelector<HTMLElement>('#comment-count')!.textContent = String(pending.length)
+  const sidebarCount = document.querySelector<HTMLElement>('#sidebar-comment-count')
+  if (sidebarCount) sidebarCount.textContent = String(pending.length)
   list.innerHTML = comments.length
     ? comments
         .map(
