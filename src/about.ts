@@ -21,7 +21,7 @@ app.innerHTML = `
         <div class="profile-actions"><a class="profile-button primary" href="/richmond-ayamga-cv.html" download>Download my CV <span>↓</span></a><a class="text-link" href="mailto:ayamrich25@gmail.com">Get in touch <span>↗</span></a></div>
       </div>
       <div class="identity-panel">
-        <div class="identity-orbit orbit-a"></div><div class="identity-orbit orbit-b"></div><div class="identity-core">RA</div>
+        <img class="profile-engineering-image" src="/profile-engineering.svg" alt="Stylized petroleum engineering subsurface and wellbore diagram" />
         <span class="identity-label label-top">RICHMOND AYAMGA</span><span class="identity-label label-bottom">UENR / PETROLEUM / 01—02</span>
       </div>
     </section>

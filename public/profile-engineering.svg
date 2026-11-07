@@ -1,0 +1,41 @@
+<svg width="900" height="900" viewBox="0 0 900 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="70" y1="50" x2="820" y2="850" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173B31"/>
+      <stop offset="1" stop-color="#091C17"/>
+    </linearGradient>
+    <linearGradient id="rock" x1="100" y1="580" x2="820" y2="870" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7CCBB4" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#315D50" stop-opacity=".2"/>
+    </linearGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#8DE0C8" stroke-opacity=".14"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="900" rx="36" fill="url(#bg)"/>
+  <rect x="34" y="34" width="832" height="832" rx="24" stroke="#8DE0C8" stroke-opacity=".2"/>
+  <rect x="34" y="34" width="832" height="832" rx="24" fill="url(#grid)"/>
+  <path d="M34 562C146 514 236 602 337 552C450 496 554 584 661 532C738 495 804 526 866 500V866H34V562Z" fill="url(#rock)" fill-opacity=".72"/>
+  <path d="M34 617C152 572 249 652 351 608C458 562 560 651 671 590C755 544 812 583 866 563" stroke="#8DE0C8" stroke-opacity=".5" stroke-width="2"/>
+  <path d="M34 694C160 652 253 728 361 687C480 642 569 734 683 675C759 636 819 675 866 655" stroke="#8DE0C8" stroke-opacity=".25" stroke-width="2"/>
+  <path d="M450 164V742" stroke="#D7FF70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M450 190L409 250H491L450 190Z" fill="#D7FF70"/>
+  <path d="M415 248H485L503 281H397L415 248Z" fill="#8DE0C8"/>
+  <path d="M404 290H496M404 325H496M404 360H496" stroke="#8DE0C8" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="450" cy="505" r="13" fill="#FF9A5C" filter="url(#glow)"/>
+  <circle cx="450" cy="505" r="5" fill="#FFF2DE"/>
+  <circle cx="450" cy="656" r="13" fill="#A99CFF" filter="url(#glow)"/>
+  <circle cx="450" cy="656" r="5" fill="#F2F0FF"/>
+  <path d="M250 442C323 386 376 395 450 430C524 465 579 474 650 414" stroke="#D7FF70" stroke-width="2" stroke-dasharray="8 12"/>
+  <path d="M180 420H305M595 420H720" stroke="#8DE0C8" stroke-opacity=".5"/>
+  <circle cx="180" cy="420" r="6" fill="#8DE0C8"/><circle cx="720" cy="420" r="6" fill="#8DE0C8"/>
+  <path d="M119 770H781" stroke="#8DE0C8" stroke-opacity=".35"/>
+  <text x="78" y="104" fill="#8DE0C8" font-family="monospace" font-size="16" letter-spacing="3">SUBSURFACE / FIELD STUDY</text>
+  <text x="78" y="138" fill="#8DA49E" font-family="monospace" font-size="12" letter-spacing="2">WELLBORE 01 · RESERVOIR READOUT</text>
+  <text x="78" y="818" fill="#8DA49E" font-family="monospace" font-size="12" letter-spacing="2">DEPTH / 2,400 M</text>
+  <text x="680" y="818" fill="#D7FF70" font-family="monospace" font-size="12" letter-spacing="2">ACTIVE</text>
+</svg>
