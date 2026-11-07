@@ -11,7 +11,9 @@ app.innerHTML = `
   <header class="profile-header">
     <a class="profile-brand" href="/" aria-label="Back to RICH portfolio"><span><img src="/nav-engineering-mark.svg" alt="" aria-hidden="true"></span><strong>RICH</strong><small>PETROLEUM / STUDENT</small></a>
     <nav aria-label="Profile navigation"><a href="/">Work</a><a class="active" href="/about.html">About</a><a href="/#notes">Notes</a></nav>
+    <button class="profile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="profile-mobile-nav">Menu</button>
     <a class="profile-button" href="/richmond-ayamga-cv.html" target="_blank" rel="noopener">View CV <span>↗</span></a>
+    <nav class="profile-mobile-nav" id="profile-mobile-nav" aria-label="Mobile profile navigation"><a href="/">Work</a><a class="active" href="/about.html">About</a><a href="/#notes">Notes</a></nav>
   </header>
   <main class="profile-main">
     <section class="profile-hero">
@@ -39,6 +41,21 @@ app.innerHTML = `
   </main>
   <footer><span>© 2026 RICHMOND AYAMGA</span><span>Petroleum engineering student / Ghana</span><a href="/">Back to work ↑</a></footer>
 `
+
+const profileMenuToggle = document.querySelector<HTMLButtonElement>('.profile-menu-toggle')
+const profileMobileNav = document.querySelector<HTMLElement>('#profile-mobile-nav')
+profileMenuToggle?.addEventListener('click', () => {
+  const isOpen = profileMobileNav?.classList.toggle('is-open') ?? false
+  profileMenuToggle.setAttribute('aria-expanded', String(isOpen))
+  profileMenuToggle.textContent = isOpen ? 'Close' : 'Menu'
+})
+profileMobileNav?.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => {
+    profileMobileNav.classList.remove('is-open')
+    profileMenuToggle?.setAttribute('aria-expanded', 'false')
+    if (profileMenuToggle) profileMenuToggle.textContent = 'Menu'
+  })
+})
 
 if (isSupabaseConfigured) {
   getProfile()

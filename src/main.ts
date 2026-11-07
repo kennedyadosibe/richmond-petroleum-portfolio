@@ -132,11 +132,15 @@ app.innerHTML = `
       <a href="#notes">Notes</a>
     </nav>
     <div class="header-actions">
+      <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">Menu</button>
       <a class="admin-link" href="/admin.html" aria-label="Open admin login" title="Admin login">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 2.9 8.4 7 10 4.1-1.6 7-5.6 7-10V6l-7-3Z"/><path d="m9.5 12 1.7 1.7 3.5-3.5"/></svg>
       </a>
       <button class="outline-button" data-modal="collaborate">Start a conversation <span>↗</span></button>
     </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+      <a href="#work">Work</a><a href="/about.html">About</a><a href="#notes">Notes</a>
+    </nav>
   </header>
 
   <main id="top">
@@ -320,6 +324,19 @@ const openProjectDetail = (project: Project) => {
 
 document.addEventListener('click', (event) => {
   const target = event.target as HTMLElement
+  const menuToggle = target.closest<HTMLButtonElement>('.mobile-menu-toggle')
+  if (menuToggle) {
+    const mobileNav = document.querySelector<HTMLElement>('#mobile-nav')
+    const isOpen = mobileNav?.classList.toggle('is-open') ?? false
+    menuToggle.setAttribute('aria-expanded', String(isOpen))
+    menuToggle.textContent = isOpen ? 'Close' : 'Menu'
+    return
+  }
+  if (target.closest('.mobile-nav a')) {
+    document.querySelector<HTMLElement>('#mobile-nav')?.classList.remove('is-open')
+    document.querySelector<HTMLButtonElement>('.mobile-menu-toggle')?.setAttribute('aria-expanded', 'false')
+    document.querySelector<HTMLButtonElement>('.mobile-menu-toggle')!.textContent = 'Menu'
+  }
   const modalTrigger = target.closest<HTMLElement>('[data-modal]')
   const projectTrigger = target.closest<HTMLElement>('[data-project-id]')
   const flipTrigger = target.closest<HTMLButtonElement>('[data-flip-project]')
