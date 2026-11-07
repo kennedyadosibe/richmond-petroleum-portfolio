@@ -10,7 +10,7 @@ app.innerHTML = `
   <header class="profile-header">
     <a class="profile-brand" href="/" aria-label="Back to RICH portfolio"><span><img src="/nav-engineering-mark.svg" alt="" aria-hidden="true"></span><strong>RICH</strong><small>PETROLEUM / STUDENT</small></a>
     <nav aria-label="Profile navigation"><a href="/">Work</a><a class="active" href="/about.html">About</a><a href="/#notes">Notes</a></nav>
-    <a class="profile-button" href="/richmond-ayamga-cv.html" download>Download CV <span>↓</span></a>
+    <a class="profile-button" href="/richmond-ayamga-cv.html" target="_blank" rel="noopener">View CV <span>↗</span></a>
   </header>
   <main class="profile-main">
     <section class="profile-hero">
@@ -18,7 +18,7 @@ app.innerHTML = `
         <p class="kicker"><span></span> The person behind the projects</p>
         <h1>Meet<br /><em>Richmond.</em></h1>
         <p class="lead">A petroleum engineering student learning how the subsurface works — and how thoughtful engineering can help build a healthier, greener future.</p>
-        <div class="profile-actions"><a class="profile-button primary" href="/richmond-ayamga-cv.html" download>Download my CV <span>↓</span></a><a class="text-link" href="mailto:ayamrich25@gmail.com">Get in touch <span>↗</span></a></div>
+        <div class="profile-actions"><a class="profile-button primary" href="/richmond-ayamga-cv.html" target="_blank" rel="noopener">View my CV <span>↗</span></a><a class="profile-button" href="/richmond-ayamga-cv.html" download>Download CV <span>↓</span></a><a class="text-link" href="mailto:ayamrich25@gmail.com">Get in touch <span>↗</span></a></div>
       </div>
       <div class="identity-panel">
         <img class="profile-engineering-image" src="/profile-engineering.svg" alt="Stylized petroleum engineering subsurface and wellbore diagram" />

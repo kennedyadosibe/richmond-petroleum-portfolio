@@ -9,7 +9,8 @@ Give visitors a clear view of Richmond Ayamga as a person and petroleum engineer
 - The homepage About links to a dedicated profile page at `/about.html`.
 - The page introduces Richmond by name and explains his interests in good health, green energy, continuous learning, and collaboration.
 - It shows his university, location, current study stage, skills, and contact details.
-- Visitors can download a print-ready CV template.
+- Visitors can view the CV in a new browser tab before choosing whether to download it.
+- Visitors can download a print-ready CV template directly.
 - Visitors can email or call him directly.
 
 ## Implementation
