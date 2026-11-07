@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Create a public-facing engineering workbench where visitors can explore projects, understand the approach behind the work, and start a collaboration or feedback thread.
+Create a public-facing petroleum engineering student portfolio where visitors can explore coursework and field studies, understand the approach behind the work, and start a feedback or knowledge-sharing thread.
 
 ## User experience
 
-- The homepage introduces the engineer and the purpose of the lab.
-- Visitors can browse project cards for GridWatch, Atlas Rover, and FlowBench.
-- Visitors can filter projects by Energy, Robotics, or Tools.
+- The homepage introduces the petroleum engineering student and the purpose of the portfolio.
+- Visitors can browse project cards for WellLog Insight, CoreLab Notes, and Field Development Plan.
+- Visitors can filter projects by Reservoir, Formation, or Production.
 - Visitors can search project titles, descriptions, and technology tags.
 - Visitors can open a collaboration dialog from the header, project cards, or notes section.
 - Visitors can submit their name, email, and message through the dialog.
@@ -26,7 +26,7 @@ Create a public-facing engineering workbench where visitors can explore projects
 - `npm run build` passes TypeScript checking and the Vite production build.
 - Browser smoke testing confirmed:
   - The homepage renders.
-  - The Robotics filter returns Atlas Rover.
+  - Category filtering returns the matching petroleum project.
   - The collaboration dialog opens and focuses the first field.
 
 ## Follow-up

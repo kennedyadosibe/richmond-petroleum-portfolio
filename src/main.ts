@@ -16,37 +16,37 @@ type Project = {
 const projects: Project[] = [
   {
     id: 'gridwatch',
-    title: 'GridWatch',
-    description: 'A predictive maintenance dashboard for distributed energy systems.',
-    category: 'Energy',
+    title: 'WellLog Insight',
+    description: 'A study of well-log data to identify lithology and estimate reservoir properties.',
+    category: 'Reservoir',
     status: 'In progress',
-    metric: '18.4%',
-    metricLabel: 'less downtime',
-    tags: ['Python', 'IoT', 'React'],
+    metric: '12',
+    metricLabel: 'wells reviewed',
+    tags: ['Petrophysics', 'Python', 'Excel'],
     accent: 'teal',
     icon: '⌁',
   },
   {
     id: 'atlas',
-    title: 'Atlas Rover',
-    description: 'Open-source autonomy stack for a small indoor mapping rover.',
-    category: 'Robotics',
-    status: 'Open for collaborators',
-    metric: '42cm',
-    metricLabel: 'mapping accuracy',
-    tags: ['ROS 2', 'C++', 'SLAM'],
+    title: 'CoreLab Notes',
+    description: 'A practical record of core analysis, porosity, permeability, and fluid-property studies.',
+    category: 'Formation',
+    status: 'Open for feedback',
+    metric: '08',
+    metricLabel: 'lab studies',
+    tags: ['Core Analysis', 'PVT', 'Reports'],
     accent: 'orange',
     icon: '◈',
   },
   {
     id: 'flowbench',
-    title: 'FlowBench',
-    description: 'A modular test rig for comparing fluid dynamics simulations.',
-    category: 'Tools',
-    status: 'Prototype',
-    metric: '3.2×',
-    metricLabel: 'faster iterations',
-    tags: ['CAD', 'OpenFOAM', 'Automation'],
+    title: 'Field Development Plan',
+    description: 'A student field-development study connecting well placement, production forecasts, and recovery.',
+    category: 'Production',
+    status: 'Draft study',
+    metric: '3',
+    metricLabel: 'scenarios compared',
+    tags: ['Reservoir Eng.', 'Eclipse', 'Mapping'],
     accent: 'purple',
     icon: '◌',
   },
@@ -84,7 +84,7 @@ app.innerHTML = `
   <header class="site-header">
     <a class="brand" href="#top" aria-label="RICH Engineering home">
       <span class="brand-mark">R</span>
-      <span><b>RICH</b><small>ENGINEERING / LAB</small></span>
+      <span><b>RICH</b><small>PETROLEUM / STUDENT</small></span>
     </a>
     <nav aria-label="Main navigation">
       <a class="active" href="#work">Work</a>
@@ -97,9 +97,9 @@ app.innerHTML = `
   <main id="top">
     <section class="hero">
       <div class="hero-copy">
-        <p class="kicker"><span></span> Independent engineer &amp; builder</p>
-        <h1>Building things<br /><em>that matter.</em></h1>
-        <p class="hero-description">A living archive of experiments, systems, and tools for a more resilient world. Follow along, leave a note, or build with me.</p>
+        <p class="kicker"><span></span> Petroleum engineering student</p>
+        <h1>Learning the<br /><em>language of the subsurface.</em></h1>
+        <p class="hero-description">A portfolio of coursework, field studies, and practical projects exploring reservoirs, wells, and the decisions that bring energy from the ground to the surface.</p>
         <div class="hero-actions">
           <a class="primary-button" href="#work">Explore the work <span>↓</span></a>
           <a class="quiet-link" href="#about">More about me <span>↗</span></a>
@@ -117,7 +117,7 @@ app.innerHTML = `
     </section>
 
     <section class="signal-bar">
-      <div><span class="signal-dot"></span> Currently exploring <strong>the edge between hardware &amp; software</strong></div>
+      <div><span class="signal-dot"></span> Currently exploring <strong>reservoir behavior, well performance &amp; field development</strong></div>
       <span class="signal-line"></span>
       <div class="signal-right">Scroll to explore <span>↓</span></div>
     </section>
@@ -130,9 +130,9 @@ app.innerHTML = `
       <div class="work-toolbar">
         <div class="filters" role="group" aria-label="Filter projects">
           <button class="filter active" data-filter="All">All projects <span>03</span></button>
-          <button class="filter" data-filter="Energy">Energy <span>01</span></button>
-          <button class="filter" data-filter="Robotics">Robotics <span>01</span></button>
-          <button class="filter" data-filter="Tools">Tools <span>01</span></button>
+          <button class="filter" data-filter="Reservoir">Reservoir <span>01</span></button>
+          <button class="filter" data-filter="Formation">Formation <span>01</span></button>
+          <button class="filter" data-filter="Production">Production <span>01</span></button>
         </div>
         <label class="search"><span>⌕</span><input id="project-search" type="search" placeholder="Search projects" /></label>
       </div>
@@ -141,8 +141,8 @@ app.innerHTML = `
     </section>
 
     <section class="manifesto" id="about">
-      <div><p class="kicker"><span></span> The approach</p><h2>Make it useful.<br /><em>Make it last.</em></h2></div>
-      <div class="manifesto-copy"><p>I’m an engineer who likes to work across the seams — where physical systems meet software, and ambitious ideas meet the practical world.</p><p>This site is a workbench, not a showroom. If you see something worth improving, <a href="#notes">leave a note</a>. If you want to get involved, even better.</p><a class="quiet-link" href="#notes">Read the field notes <span>↗</span></a></div>
+      <div><p class="kicker"><span></span> The approach</p><h2>Stay curious.<br /><em>Think in systems.</em></h2></div>
+      <div class="manifesto-copy"><p>I’m a petroleum engineering student building a clear record of what I’m learning — from rock and fluid properties to reservoir decisions and production strategy.</p><p>This site is a study desk, not a showroom. If you spot a better method, have field experience to share, or want to discuss a project, <a href="#notes">leave a note</a>.</p><a class="quiet-link" href="#notes">Read the field notes <span>↗</span></a></div>
     </section>
 
     <section class="notes-section" id="notes">
@@ -150,11 +150,11 @@ app.innerHTML = `
       <div class="notes-grid">
         <article class="note-card"><span class="note-number">01</span><p class="eyebrow">On process / 06.14.24</p><h3>The first prototype is a question, not an answer.</h3><a href="#notes" class="quiet-link">Read note <span>↗</span></a></article>
         <article class="note-card"><span class="note-number">02</span><p class="eyebrow">On systems / 05.28.24</p><h3>Designing for the failure you haven’t seen yet.</h3><a href="#notes" class="quiet-link">Read note <span>↗</span></a></article>
-        <article class="note-card dark"><span class="note-number">03</span><p class="eyebrow">Open invitation</p><h3>Have a sharp question or a useful idea?</h3><button class="text-button" data-modal="note">Start a thread <span>↗</span></button></article>
+        <article class="note-card dark"><span class="note-number">03</span><p class="eyebrow">Open invitation</p><h3>Have a field insight or a useful question?</h3><button class="text-button" data-modal="note">Start a thread <span>↗</span></button></article>
       </div>
     </section>
   </main>
-  <footer><span>© 2024 RICH ENGINEERING / LAB</span><span>Built in public, with intent.</span><a href="#top">Back to top ↑</a></footer>
+  <footer><span>© 2024 RICH / PETROLEUM ENGINEERING</span><span>Learning in public, with intent.</span><a href="#top">Back to top ↑</a></footer>
   <div class="modal-backdrop" id="modal" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" aria-label="Close dialog">×</button><p class="kicker"><span></span> Open channel</p><h2 id="modal-title">Let’s build<br /><em>something useful.</em></h2><p class="modal-intro">Share a question, an idea, or a project you’d like to work on together.</p><form id="contact-form"><label>Your name<input name="name" required placeholder="Ada Lovelace" /></label><label>Email address<input name="email" type="email" required placeholder="ada@example.com" /></label><label>What’s on your mind?<textarea name="message" rows="4" required placeholder="I’ve been thinking about..."></textarea></label><button class="primary-button" type="submit">Send message <span>↗</span></button></form></div></div>
 `
 
@@ -190,7 +190,7 @@ document.querySelector<HTMLButtonElement>('#show-all')!.addEventListener('click'
 })
 
 const openModal = (title = 'Let’s build') => {
-  modalTitle.innerHTML = `${title}<br /><em>something useful.</em>`
+  modalTitle.innerHTML = `${title}<br /><em>from the field.</em>`
   modal.hidden = false
   document.body.classList.add('modal-open')
   modal.querySelector<HTMLInputElement>('input')?.focus()
