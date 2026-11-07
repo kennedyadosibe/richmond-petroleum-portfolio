@@ -191,7 +191,7 @@ app.innerHTML = `
       </div>
     </section>
   </main>
-  <footer><span>© 2024 RICH / PETROLEUM ENGINEERING</span><span>Learning in public, with intent.</span><a href="#top">Back to top ↑</a></footer>
+  <footer><span>© 2026 RICH / PETROLEUM ENGINEERING</span><span>Learning in public, with intent.</span><a href="#top">Back to top ↑</a></footer>
   <div class="modal-backdrop" id="modal" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" aria-label="Close dialog">×</button><p class="kicker"><span></span> Open channel</p><h2 id="modal-title">Let’s build<br /><em>from the field.</em></h2><p class="modal-intro" id="modal-intro">Share a question, an idea, or a project you’d like to work on together.</p><div id="project-detail" hidden></div><form id="contact-form"><label>Your name<input name="name" required placeholder="Ada Lovelace" /></label><label>Email address<input name="email" type="email" required placeholder="ada@example.com" /></label><label>Your comment<textarea name="message" rows="4" required placeholder="I’ve been thinking about..."></textarea></label><button class="primary-button" type="submit">Send comment <span>↗</span></button></form></div></div>
 `
 
